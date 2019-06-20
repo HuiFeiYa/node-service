@@ -2,7 +2,7 @@ const Router = require('koa-router')
 const router = new Router()
 const jsonMine = 'application/json'
 const { findAll } = require('./lib/db/user')
-const { findAllWord } = require('./lib/db/word/index')
+const { findAllUser, findUserByName } = require('./lib/db/word/index')
 const { login } = require('./actions/account')
 const { findOpenid } = require('./controller/home')
 const { encode } = require('./lib/crypto')
@@ -39,9 +39,19 @@ module.exports = app => {
       handle(ctx, ctx.state.user)
     }
   })
-  router.get('/word', auth, async ctx => {
-    const all = await findAllWord()
-    handle(ctx, all)
+  router.get('/vue/login', async ctx => {
+    const { username, password } = ctx.request.query
+    console.log('header', ctx.request.header)
+
+    const allList = await findUserByName(username)
+    if (allList.length === 0) {
+      handle(ctx, '', 1, '该用户未注册')
+    } else {
+      handle(ctx, allList)
+    }
+  })
+  router.get('/api/simple', ctx => {
+    ctx.body = { result: 'simple request success' }
   })
   app.use(router.routes())
 }
