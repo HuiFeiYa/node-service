@@ -41,13 +41,17 @@ module.exports = app => {
   })
   router.get('/vue/login', async ctx => {
     const { username, password } = ctx.request.query
-    console.log('header', ctx.request.header)
 
     const allList = await findUserByName(username)
+
     if (allList.length === 0) {
       handle(ctx, '', 1, '该用户未注册')
     } else {
-      handle(ctx, allList)
+      if (allList[0].password !== password) {
+        handle(ctx, '', 1, '密码错误')
+      } else {
+        handle(ctx, '', 0, '登陆成功')
+      }
     }
   })
   router.get('/api/simple', ctx => {

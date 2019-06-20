@@ -35,6 +35,7 @@ module.exports = function crossOrigin(options = {}) {
     if (!origin) {
       return await next()
     }
+    console.log('allow', origin)
 
     // Access-Control-Allow-Origin
     ctx.set('Access-Control-Allow-Origin', origin)
@@ -44,6 +45,7 @@ module.exports = function crossOrigin(options = {}) {
       if (!ctx.get('Access-Control-Request-Method')) {
         return await next()
       }
+      console.log('options', options)
 
       // Access-Control-Max-Age
       if (options.maxAge) {
