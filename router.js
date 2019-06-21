@@ -1,21 +1,11 @@
 const Router = require('koa-router')
 const router = new Router()
-const jsonMine = 'application/json'
 const { findAll } = require('./lib/db/user')
-const { findAllUser, findUserByName } = require('./lib/db/word/index')
 const { login } = require('./actions/account')
 const { findOpenid } = require('./controller/home')
 const { encode } = require('./lib/crypto')
 const auth = require('./middlewares/auth')
-// 统一处理返回数据
-function handle(ctx, data, code = 0, message = 'success') {
-  ctx.type = jsonMine
-  ctx.body = {
-    code,
-    data,
-    message
-  }
-}
+const { vueLogin, vueRegistered } = require('./controller/login')
 module.exports = app => {
   router.get('/login', async (ctx, next) => {
     const { code } = ctx.request.query
@@ -39,23 +29,7 @@ module.exports = app => {
       handle(ctx, ctx.state.user)
     }
   })
-  router.get('/vue/login', async ctx => {
-    const { username, password } = ctx.request.query
-
-    const allList = await findUserByName(username)
-
-    if (allList.length === 0) {
-      handle(ctx, '', 1, '该用户未注册')
-    } else {
-      if (allList[0].password !== password) {
-        handle(ctx, '', 1, '密码错误')
-      } else {
-        handle(ctx, '', 0, '登陆成功')
-      }
-    }
-  })
-  router.get('/api/simple', ctx => {
-    ctx.body = { result: 'simple request success' }
-  })
+  router.get('/vue/login', vueLogin)
+  router.get('/vue/register', vueRegistered)
   app.use(router.routes())
 }
