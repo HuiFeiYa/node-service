@@ -1,4 +1,4 @@
-const { getOpenid } = require('../lib/db/user')
+const { getOpenid } = require('../lib/db/minprogram/login/user')
 const { decode } = require('../lib/crypto')
 
 // 统一获取token值

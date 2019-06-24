@@ -2,7 +2,7 @@ const {
   findUserByName,
   findUserById,
   createUser
-} = require('../lib/db/word/index')
+} = require('../lib/db/vue_back/word/index')
 // 统一处理返回数据
 const jsonMine = 'application/json'
 function handle(ctx, data, code = 0, message = 'success') {
