@@ -3,8 +3,8 @@ const { decode } = require('../lib/crypto')
 
 // 统一获取token值
 module.exports = async function(ctx, next) {
-  const sessionKey = ctx.get('x-session')
-  const { id, timespan } = decode(sessionKey)
+  const { token } = ctx.request.body
+  const { id, timespan } = decode(token)
   // 查找数据库中是否存在该 openid，返回是一个数组，如果不存在则返回[]
   const targetList = await getOpenid(id)
   if (targetList.length > 0) {

@@ -8,12 +8,21 @@ const {
 const { getCurrentTime } = require('../../utils/date')
 const { client } = require('../utils')
 const { encode } = require('../../lib/crypto.js')
+const WXBizDataCrypt = require('./WXBizDataCrypt')
+const appId = 'wxc61d58d3c32c497e'
 async function login(ctx) {
-  const { code } = ctx.request.body
+  const { code, data, iv } = ctx.request.body
+  console.log('获取的数据', code, data, iv)
+
   const all = await findAll()
   const session = await getSession(code)
   if (session) {
     const { session_key, openid } = session
+    const pc = new WXBizDataCrypt(appId, session_key)
+    const result = pc.decryptData(data, iv)
+
+    console.log('解密后', result)
+
     // 查找数据是否已经存有openid，进行数据库相关逻辑操作
     await checkOpenid(ctx, openid)
     client(ctx, { token: encode(openid) })
